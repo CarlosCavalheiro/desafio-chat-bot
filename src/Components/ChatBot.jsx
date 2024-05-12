@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './ChatBot.css'; // Assuming you have a CSS file for styling
+import './ChatBot.css';
 
 const ChatBot = () => {
-  const API_KEY = 'AIzaSyBd3oofkb4sNED2b0lMYKGddSHxGZNcHFQ'; // Replace with your actual API key
+  const API_KEY = 'SUA API KEY';
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [context, setContext] = useState([]); // Changed from null to empty array
+  const [context, setContext] = useState([]);
 
   const handleMessageSend = () => {
     if (inputValue.trim() !== '') {
@@ -56,7 +56,7 @@ const ChatBot = () => {
       const data = await response.json();
       console.log('Resposta da API de linguagem generativa do Google:', data);
       setMessages([...messages, { text: data.candidates[0].content.parts[0].text, sender: 'bot' }]);
-      setContext([...conversationContext, { role: 'mo1del', parts: [{ text: data.text }] }]); // Update context
+      setContext([...conversationContext, { role: 'mo1del', parts: [{ text: data.text }] }]);
     } catch (error) {
       console.error('Erro ao fazer solicitação à API de linguagem generativa do Google:', error);
     }
