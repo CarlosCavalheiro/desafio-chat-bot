@@ -1,1 +1,1 @@
-# desafio-chat-bot
+# Chatbot Gemini e ReactJS
