@@ -27,7 +27,7 @@ Este projeto demonstra como construir um chatbot simples usando o modelo de ling
 2. **Instale as dependências:**
 3. **Insira sua chave de API:**
 
-- Abra o arquivo `ChatBot.js`.
+- Abra o arquivo `ChatBot.jsx`.
 - Substitua `'SUA_CHAVE_DE_API'` pelo valor da sua chave de API do Gemini Pro.
 
 4. **Inicie o servidor de desenvolvimento:**
