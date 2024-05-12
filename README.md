@@ -37,7 +37,7 @@ Este projeto demonstra como construir um chatbot simples usando o modelo de ling
 
 ## 📁 Estrutura do Projeto:
 
-- `ChatBot.js`: Contém o componente principal do chatbot.
+- `ChatBot.jsx`: Contém o componente principal do chatbot.
 - `ChatBot.css`: Contém os estilos para o chatbot.
 - `README.md`: Este arquivo.
 
