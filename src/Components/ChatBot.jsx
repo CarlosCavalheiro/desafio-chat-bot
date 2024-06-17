@@ -1,21 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './ChatBot.css';
 
-const ChatBot = () => {
-  const API_KEY = 'SUA API KEY';
-  const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [context, setContext] = useState([]);
+// Componente para a postagem do usuário
+const UserMessage = ({ text }) => {
+  return <div className="message user">{text}</div>;
+};
 
-  const handleMessageSend = () => {
-    if (inputValue.trim() !== '') {
-      setMessages([...messages, { text: inputValue, sender: 'user' }]);
-      fetchChatbotResponse(inputValue, context);
+// Componente para a resposta do chat
+const BotMessage = ({ text }) => {
+  return <div className="message bot">{text}</div>;
+};
+
+const ChatBot = () => {
+  //const API_KEY = 'SUA API KEY'; //Substituir pela sua API_KEY
+  const API_KEY = 'AIzaSyBd3oofkb4sNED2b0lMYKGddSHxGZNcHFQ';
+
+  const [messages, setMessages] = useState([
+    { role: "model",
+      text: "Olá! Como posso te ajudar hoje?!"
+    }
+  ]);
+  
+  const [inputValue, setInputValue] = useState('');
+  const [conversationHistory, setConversationHistory] = useState([]);
+
+  const handleMessageSend = async () => {
+    if (inputValue.trim() !== '') {      
+      setMessages([...messages, { role: "user", text: inputValue }]);
+      setConversationHistory([...conversationHistory, {role: "user", parts: [{text: inputValue}]}]);
+      await fetchChatbotResponse(inputValue);
       setInputValue('');
     }
   };
 
-  const fetchChatbotResponse = async (message, conversationContext) => {
+  console.log(conversationHistory)
+
+  const fetchChatbotResponse = async (message) => {    
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
@@ -26,37 +46,20 @@ const ChatBot = () => {
           },
           body: JSON.stringify({
             contents: [
-              ...conversationContext,
-              {
-                role: 'user',
-                parts: [{ text: message }],
-              },
-            ],
-            safetySettings: [
-              {
-                category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-                threshold: 'BLOCK_ONLY_HIGH',
-              },
-            ],
-            generationConfig: {
-              stopSequences: ['Title'],
-              temperature: 1.0,
-              maxOutputTokens: 800,
-              topP: 0.8,
-              topK: 10,
-            },
-          }),
+              conversationHistory          
+            ]},
+          )         
         }
       );
 
       if (!response.ok) {
         throw new Error('Erro ao fazer solicitação à API de linguagem generativa do Google');
       }
-
+      
       const data = await response.json();
-      console.log('Resposta da API de linguagem generativa do Google:', data);
-      setMessages([...messages, { text: data.candidates[0].content.parts[0].text, sender: 'bot' }]);
-      setContext([...conversationContext, { role: 'mo1del', parts: [{ text: data.text }] }]);
+      const botMessage = { role: "model", text: data.candidates[0].content.parts[0].text};      
+      setMessages([...messages, botMessage]);
+      setConversationHistory([...conversationHistory, {role: "model", parts: [{text: data.candidates[0].content.parts[0].text}]}]);
     } catch (error) {
       console.error('Erro ao fazer solicitação à API de linguagem generativa do Google:', error);
     }
@@ -64,12 +67,14 @@ const ChatBot = () => {
 
   return (
     <div className="chatbot-container">
-      <div className="chatbot-messages">
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
-        ))}
+      <div className="chatbot-messages">      
+        {messages.map((message, index) => {          
+          if (message.role === "user") {
+            return <UserMessage key={index} text={message.text} />;
+          } else {
+            return <BotMessage key={index} text={message.text} />;
+          }
+        })}
       </div>
       <div className="chatbot-input">
         <input

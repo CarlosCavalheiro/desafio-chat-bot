@@ -56,3 +56,17 @@
     background-color: #0056b3;
   }
   
+  .message {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .message.user {
+    background-color: #e2e2e2;
+  }
+  
+  .message.bot {
+    background-color: #c4e1ff;
+  }
+  
